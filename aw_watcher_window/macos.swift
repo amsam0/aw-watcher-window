@@ -313,23 +313,22 @@ class MainThing {
       return
     }
 
-    guard let bundleIdentifier = frontmost.bundleIdentifier else {
-      log("Failed to get bundle identifier from frontmost application")
-      return
-    }
-
     // calculate now before executing any scripting since that can take some time
     let nowTime = Date.now
 
     var windowTitle: AnyObject?
     AXUIElementCopyAttributeValue(axElement, kAXTitleAttribute as CFString, &windowTitle)
 
-    let applicationName = frontmost.localizedName ?? bundleIdentifier
-    var data = NetworkMessage(app: applicationName, title: windowTitle as? String ?? "Unknown Title")
+    let applicationName = frontmost.localizedName ?? frontmost.bundleIdentifier ?? ""
+    var data = NetworkMessage(app: applicationName, title: windowTitle as? String ?? "")
 
     if CHROME_BROWSERS.contains(applicationName) {
       debug("Chrome browser detected, extracting URL and title")
 
+      guard let bundleIdentifier = frontmost.bundleIdentifier else {
+        log("Failed to get bundle identifier from frontmost application")
+        return
+      }
       let chromeObject: ChromeProtocol = SBApplication.init(bundleIdentifier: bundleIdentifier)!
 
       guard let windows = chromeObject.windows,
@@ -361,6 +360,10 @@ class MainThing {
     } else if frontmost.localizedName == "Safari" {
       debug("Safari browser detected, extracting URL and title")
 
+      guard let bundleIdentifier = frontmost.bundleIdentifier else {
+        log("Failed to get bundle identifier from frontmost application")
+        return
+      }
       let safariObject: SafariApplication = SBApplication.init(bundleIdentifier: bundleIdentifier)!
 
       guard let windows = safariObject.windows,
