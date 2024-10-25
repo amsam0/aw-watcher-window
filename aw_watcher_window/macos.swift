@@ -101,7 +101,7 @@ func logPrefix(_ level: String) -> String {
 let logLevel = ProcessInfo.processInfo.environment["LOG_LEVEL"]?.uppercased() ?? "INFO"
 
 func debug(_ msg: String) {
-  if(logLevel == "DEBUG") {
+  if (logLevel == "DEBUG") {
     print("\(logPrefix("DEBUG")) \(msg)")
     fflush(stdout)
   }
@@ -326,7 +326,7 @@ class MainThing {
       debug("Chrome browser detected, extracting URL and title")
 
       guard let bundleIdentifier = frontmost.bundleIdentifier else {
-        log("Failed to get bundle identifier from frontmost application")
+        log("Failed to get bundle identifier from frontmost application, which was recognized to be Chrome")
         return
       }
       let chromeObject: ChromeProtocol = SBApplication.init(bundleIdentifier: bundleIdentifier)!
@@ -361,7 +361,7 @@ class MainThing {
       debug("Safari browser detected, extracting URL and title")
 
       guard let bundleIdentifier = frontmost.bundleIdentifier else {
-        log("Failed to get bundle identifier from frontmost application")
+        log("Failed to get bundle identifier from frontmost application, which was recognized to be Safari")
         return
       }
       let safariObject: SafariApplication = SBApplication.init(bundleIdentifier: bundleIdentifier)!
